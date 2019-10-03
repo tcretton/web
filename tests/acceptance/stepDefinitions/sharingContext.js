@@ -397,3 +397,30 @@ Then('user {string} should have a share with these details:', function (user, ex
 Given('the user {string} has created a new public link for resource {string}', function (user, resource) {
   return shareFileFolder(resource, user, '', SHARE_TYPES.public_link)
 })
+
+When('the user sets the sharing permissions of {string} for {string} using the webUI to', function (user, resource, dataTable) {
+  // return client.page.FilesPageElement.sharingDialog()
+  return client.page.FilesPageElement
+    .filesList()
+    .closeSidebar(100)
+    .openSharingDialog(resource)
+    .then(() => {
+      return client
+        .page
+        .FilesPageElement
+        .sharingDialog()
+        .expandInformationSelector(user)
+    }).then(() => {
+      const promises = []
+      dataTable.rawTable.map(item => {
+        promises.push(
+          client
+            .page
+            .FilesPageElement
+            .sharingDialog()
+            // .changeCollaboratorRole(user, 'custom role')
+            .changeSinglePermission(item[0], item[1] === 'yes'))
+      })
+      return Promise.all(promises)
+    })
+})
