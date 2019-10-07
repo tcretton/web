@@ -5,4 +5,4 @@ Feature: Main Element exists
 
   Scenario: Checking if a main landmark exists
     When the user has browsed to the files page
-    Then they will find only one main navigation element
+    Then they will find only one main element
