@@ -98,6 +98,9 @@ module.exports = {
     },
     appContainer: {
       selector: '#oc-app-container'
+    },
+    mainEl: {
+      selector: 'main'
     }
   }
 }
