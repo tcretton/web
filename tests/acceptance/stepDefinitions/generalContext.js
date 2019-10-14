@@ -80,8 +80,8 @@ Then('they will find only one main element', function () {
   // The following line yields: Expected elements <Element [name=@mainEl]> count to equal: "1" - expected "equal '1'" but got: "0"
   // return client.page.phoenixPage().expect.elements('@mainEl').count.to.equal(1)
   //
-  // The following line returns
-  return console.log(client.page.phoenixPage().waitForElementVisible('@mainEl'))
+  // The following line returns:  Error while running .locateMultipleElements() protocol action: No active session with ID a693d37dc8b204143fbfaffad90e4ed1
+  // return console.log(client.page.phoenixPage().waitForElementVisible('@mainEl'))
   //
   // The following line returns: Error while running "waitForElementVisible" command: Timed out while waiting for element <css selector> to be present for 10000 milliseconds. - expected "visible" but got: "not found"
   //  return client.waitForElementVisible('css selector', '#main', function (result) {
