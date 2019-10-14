@@ -87,4 +87,11 @@ Then('they will find only one main element', function () {
   //  return client.waitForElementVisible('css selector', '#main', function (result) {
   //   console.log(result)
   // })
+  // return client.page.phoenixPage()
+
+  // The following lines return: failed (@mainEl is '#main')
+  // Error while running "element" command: Expected element <Element [name=@mainEl]> to be present - element was not found - expected "present" but got: "not present"
+  // return client
+  //   .page.phoenixPage()
+  //   .expect.element('@mainEl').to.be.present
 })

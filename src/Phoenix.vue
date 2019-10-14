@@ -7,7 +7,7 @@
       <message-bar />
       <top-bar></top-bar>
       <side-menu></side-menu>
-      <main id="#main">
+      <main id="main">
         <router-view id="oc-app-container" name="app" class="uk-height-1-1"></router-view>
       </main>
     </template>

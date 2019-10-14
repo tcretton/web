@@ -100,7 +100,7 @@ module.exports = {
       selector: '#oc-app-container'
     },
     mainEl: {
-      selector: 'main'
+      selector: '#main'
     }
   }
 }
