@@ -71,10 +71,20 @@ After(function () {
 Then('they will find only one main element', function () {
   // What I want to achieve: return client.expect.elements('main').count.to.equal(1)
   // Does not work: console.log(client.page.phoenixPage().waitForElementVisible('@mainEl'))
+
   // The following returns: "no such element: Unable to locate element:"
   // return client.element('css selector', 'main', function (result) {
   //   console.log(result)
   // })
+  //
   // The following line yields: Expected elements <Element [name=@mainEl]> count to equal: "1" - expected "equal '1'" but got: "0"
-  return client.page.phoenixPage().expect.elements('@mainEl').count.to.equal(1)
+  // return client.page.phoenixPage().expect.elements('@mainEl').count.to.equal(1)
+  //
+  // The following line returns
+  return console.log(client.page.phoenixPage().waitForElementVisible('@mainEl'))
+  //
+  // The following line returns: Error while running "waitForElementVisible" command: Timed out while waiting for element <css selector> to be present for 10000 milliseconds. - expected "visible" but got: "not found"
+  //  return client.waitForElementVisible('css selector', '#main', function (result) {
+  //   console.log(result)
+  // })
 })
