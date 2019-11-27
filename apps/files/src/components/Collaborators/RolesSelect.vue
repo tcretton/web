@@ -48,6 +48,10 @@ export default {
     selectedRole: {
       type: Object,
       required: true
+    },
+    roles: {
+      type: Object,
+      required: true
     }
   },
   methods: {

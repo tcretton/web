@@ -1,5 +1,4 @@
 import { mapGetters, mapActions } from 'vuex'
-import roles from '../helpers/collaboratorRolesDefinition'
 
 export default {
   computed: {
@@ -37,14 +36,6 @@ export default {
       }
 
       return advancedRole
-    },
-
-    roles () {
-      const isFolder = this.highlightedFile.type === 'folder'
-      const collaboratorRoles = roles({ translate: this.$gettext, isFolder: isFolder })
-      collaboratorRoles.advancedRole = this.advancedRole
-
-      return collaboratorRoles
     }
   },
   methods: {

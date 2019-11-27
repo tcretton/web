@@ -1,5 +1,5 @@
 <template>
-  <div id="oc-files-file-link">
+  <div id="oc-files-file-link" class="uk-position-relative">
     <template v-if="$_privateLinkOfHighlightedFile">
       <div class="uk-text-bold">
         Private Link
@@ -20,7 +20,11 @@
       <oc-button v-if="!linksLoading" :disabled="!!(formOpen || linkId)" variation="primary" icon="add" @click="$_openForm()" v-translate>Add Link</oc-button>
       <button v-else disabled class="uk-button uk-button-default uk-position-relative"><oc-spinner class="uk-position-small uk-position-center-left" size="small" /><span class="uk-margin-small-left" v-translate>Loading</span></button>
     </div>
-    <FileLinkForm v-if="formOpen" v-bind:params="params" :linkId="linkId" class="uk-margin" />
+    <transition name="custom-classes-transition" enter-active-class="uk-animation-slide-right uk-animation-fast" leave-active-class="uk-animation-slide-right uk-animation-reverse uk-animation-fast">
+      <div v-if="formOpen" class="uk-position-cover oc-default-background">
+        <FileLinkForm v-bind:params="params" :linkId="linkId" class="uk-margin" />
+      </div>
+    </transition>
     <transition-group tag="ul" name="custom-classes-transition" enter-active-class="uk-animation-slide-left-medium" leave-active-class="uk-animation-slide-right-medium uk-animation-reverse" class="uk-list uk-list-divider uk-overflow-hidden">
       <li v-for="(link, index) in $_links" :key="'li-' + index">
         <oc-grid flex gutter="small">

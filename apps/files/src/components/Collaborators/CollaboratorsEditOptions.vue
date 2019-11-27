@@ -1,6 +1,7 @@
 <template>
   <oc-grid gutter="small" childWidth="1-1">
     <roles-select
+      :roles="roles"
       :selectedRole="role"
       @roleSelected="selectRole"
     />
@@ -29,6 +30,7 @@
 
 <script>
 import collaboratorsMixins from '../../mixins/collaborators'
+import collaboratorRoles from '../../helpers/collaboratorRolesDefinition'
 
 const RolesSelect = () => import('./RolesSelect.vue')
 const AdditionalPermissions = () => import('./AdditionalPermissions.vue')
@@ -79,6 +81,14 @@ export default {
         return Object.keys(this.selectedRole.additionalPermissions).length > 0
       }
       return false
+    },
+
+    roles () {
+      const isFolder = this.highlightedFile.type === 'folder'
+      const roles = collaboratorRoles({ translate: this.$gettext, isFolder: isFolder })
+      roles.advancedRole = this.advancedRole
+
+      return roles
     },
 
     role () {

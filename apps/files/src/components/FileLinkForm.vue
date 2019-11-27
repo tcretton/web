@@ -1,54 +1,25 @@
 <template>
-  <div class="oc-files-file-link-form uk-background-muted uk-padding-small">
+  <div class="oc-files-file-link-form uk-padding-small">
     <transition name="custom-classes-transition" enter-active-class="uk-animation-slide-top-small" leave-active-class="uk-animation-slide-top-small uk-animation-reverse">
       <div class="uk-alert-danger" v-if="errors" uk-alert>
         <a class="uk-alert-close" uk-close></a>
         <p v-text="errors" />
       </div>
     </transition>
-    <div class="uk-margin">
-      <label class="uk-form-label" v-translate>Name your link</label>
-      <input class="uk-input" v-model="name" id="oc-files-file-link-name"/>
+      <div class="uk-margin">
+        <label class="uk-form-label" v-translate>Name your link</label>
+        <input class="uk-input" v-model="name" id="oc-files-file-link-name"/>
       </div>
       <h4 class="uk-margin-medium-top uk-heading-divider" v-translate>
         Set Roles
       </h4>
-      <div class="uk-margin uk-grid-small" uk-grid>
-      <div class="uk-width-auto">
-        <input type="radio" class="uk-radio" v-model="permissions" value="1" id="oc-files-file-link-collaborator-role-viewer" />
-      </div>
-      <label class="uk-width-expand" @click="permissions = 1">
-        <span>Viewer</span><br>
-        <span class="uk-text-meta" v-translate>Recipients can view and download contents.</span>
-      </label>
-      </div>
-      <div v-if="$_isFolder" class="uk-margin uk-grid-small" uk-grid>
-      <div class="uk-width-auto">
-        <input type="radio" class="uk-radio" v-model="permissions" value="5" id="oc-files-file-link-collaborator-role-contributor" />
-      </div>
-      <label class="uk-width-expand" @click="permissions = 5">
-        <span v-translate>Contributor</span><br>
-        <span class="uk-text-meta" v-translate>Recipients can view, download and upload contents.</span>
-      </label>
-      </div>
-      <div v-if="$_isFolder" class="uk-margin uk-grid-small" uk-grid>
-      <div class="uk-width-auto">
-        <input type="radio" class="uk-radio" v-model="permissions" value="15" id="oc-files-file-link-collaborator-role-editor" />
-      </div>
-      <label class="uk-width-expand" @click="permissions = 15">
-        <span v-translate>Editor</span><br>
-        <span class="uk-text-meta" v-translate>Recipients can view, download, edit, delete and upload contents.</span>
-      </label>
-      </div>
-      <div v-if="$_isFolder" class="uk-margin uk-grid-small" uk-grid>
-      <div class="uk-width-auto">
-        <input type="radio" class="uk-radio" v-model="permissions" value="4" id="oc-files-file-link-collaborator-role-uploader" />
-      </div>
-      <label class="uk-width-expand" @click="permissions = 4">
-        <span v-translate>Uploader</span><br>
-        <span class="uk-text-meta" v-translate>Receive files from multiple recipients without revealing the contents of the folder.</span>
-      </label>
-      </div>
+      <oc-grid gutter="small" childWidth="1-1">
+        <roles-select
+          :roles="$_roles"
+          :selectedRole="selectedRole"
+          @roleSelected="$_selectRole"
+        />
+      </oc-grid>
       <h4 class="uk-margin-medium-top uk-heading-divider" v-translate>
         Security settings
       </h4>
@@ -97,15 +68,24 @@
 import { mapGetters, mapActions } from 'vuex'
 import mixins from '../mixins'
 import moment from 'moment'
+import publicLinkRoles from '../helpers/publicLinkRolesDefinition.js'
+// FIXME: move RolesSelect to common location
+const RolesSelect = () => import('./Collaborators/RolesSelect.vue')
 
 export default {
   mixins: [mixins],
+  components: {
+    RolesSelect
+  },
   props: ['params', 'linkId'],
   data () {
     return {
       password: null,
       errors: false,
       ...this.params,
+
+      // TODO: make this a property
+      selectedRole: this.$_roles().viewer,
 
       placeholder: {
         expireDate: this.$gettext('Expiration date'),
@@ -194,10 +174,21 @@ export default {
 
     $_passwordRemoveText () {
       return this.$gettext('Remove password')
+    },
+
+    $_roles () {
+      const isFolder = this.highlightedFile.type === 'folder'
+      const roles = publicLinkRoles({ translate: this.$gettext, isFolder: isFolder })
+
+      return roles
     }
   },
   methods: {
     ...mapActions('Files', ['addLink', 'updateLink']),
+
+    $_selectRole (value) {
+      this.selectedRole = value
+    },
 
     $_addLink () {
       const params = {
