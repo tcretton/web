@@ -1,6 +1,8 @@
 const { client, createSession, closeSession, startWebDriver, stopWebDriver } = require('nightwatch-api')
 const userSettings = require('./userSettings')
+const ldap = require('./ldapHelper')
 
+const redis = require('redis')
 module.exports = {
   /**
    *
@@ -35,13 +37,21 @@ module.exports = {
     if (process.env.DRONE) {
       env = 'drone'
     }
-    console.log(client.globals)
     await closeSession()
     await stopWebDriver()
     await startWebDriver({ env })
     await createSession({ env })
-    console.log(client.globals)
     return this.loginAsUser(userId)
+      .then(() => {
+        if (!client.globals.redisClient) {
+          client.globals.redisClient = redis.createClient()
+        }
+        if (!client.globals.ldapClient) {
+          ldap.createClient().then(ldapClient => {
+            client.globals.ldapClient = ldapClient
+          })
+        }
+      })
   },
 
   logout: function (userId) {

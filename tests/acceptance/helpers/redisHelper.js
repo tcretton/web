@@ -17,17 +17,16 @@ exports.clearVersion = async function (user) {
 
   for (const elem of keys) {
     const val = await getAsync(elem)
-    console.log(elem)
-    console.log(val)
     if (!val || val.startsWith(join(client.globals.ocis_data_dir, 'data', user))) {
-      // console.log('Deleting: ' + val)
       await delAsync(elem)
     }
   }
   console.log('Deleting versions for user ' + user)
   console.log('Deleting directory ' + join(client.globals.ocis_data_dir, 'data', user, 'files_versions'))
   fs.removeSync(join(client.globals.ocis_data_dir, 'data', user, 'files_versions'))
-  return endAsync()
+
+  // redisClient.quit()
+  await endAsync()
 }
 
 exports.clearAllVersion = async function () {
@@ -44,7 +43,7 @@ exports.clearAllVersion = async function () {
   const keys = await keysAsync('*')
 
   for (const elem of keys) {
-    const val = await getAsync(elem)
+    // const val = await getAsync(elem)
     // console.log('Deleting: ' + val)
     await delAsync(elem)
   }
@@ -54,5 +53,5 @@ exports.clearAllVersion = async function () {
     console.log('Deleting versions for user ' + user)
     fs.removeSync(join(client.globals.ocis_data_dir, 'data', user, 'files_versions'))
   }
-  return endAsync()
+  await endAsync()
 }

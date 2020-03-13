@@ -242,8 +242,9 @@ After(async function () {
   const createdRemoteUsers = Object.keys(userSettings.getCreatedUsers('REMOTE'))
   const createdGroups = userSettings.getCreatedGroups()
 
-  console.log(client.globals)
   if (client.globals.ocis) {
+    const clearVersionsPromises = createdUsers.map(user => redisHelper.clearVersion(user))
+    await Promise.all(clearVersionsPromises)
     const deleteUserPromises = createdUsers.map(
       user => ldap.deleteUser(client.globals.ldapClient, user)
         .then(() => {
@@ -257,8 +258,6 @@ After(async function () {
           console.log('Deleted LDAP Group: ', group)
         })
     )
-    const clearVersionsPromises = createdUsers.map(user => redisHelper.clearVersion(user))
-    await Promise.all(clearVersionsPromises)
     await Promise.all([...deleteUserPromises, ...deleteGroupPromises])
       .then(() => {
         userSettings.resetCreatedUsers()

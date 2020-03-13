@@ -8,6 +8,21 @@ const userHelper = require('./userSettings')
 const USERS_OU = 'ou=TestUsers,dc=owncloud,dc=com'
 const GROUPS_OU = 'ou=TestGroups,dc=owncloud,dc=com'
 
+exports.newClient = function (url) {
+  return new Promise((resolve, reject) => {
+    const ldapClient = ldap.createClient({
+      url: url || client.globals.ldap_url
+    })
+
+    ldapClient.bind(client.globals.ldap_base_dn, client.globals.ldap_password, err => {
+      if (err) {
+        reject(err)
+      }
+    })
+    resolve(ldapClient)
+  })
+}
+
 exports.createClient = function (url) {
   return new Promise((resolve, reject) => {
     const ldapClient = ldap.createClient({
@@ -161,10 +176,7 @@ exports.deleteUser = function (ldapClient, user) {
       if (err) {
         reject(err)
       }
-      console.log('Deleting Data dir for ' + user)
-      console.log(fs.existsSync(join(client.globals.ocis_data_dir, 'data', user)))
       fs.removeSync(join(client.globals.ocis_data_dir, 'data', user))
-      console.log(fs.existsSync(join(client.globals.ocis_data_dir, 'data', user)))
 
       resolve()
     })
@@ -182,6 +194,7 @@ exports.terminate = function (ldapClient) {
     ldapClient.destroy(err => {
       !err || console.log(err)
     })
+    console.log("closing ldap conn")
     resolve()
   })
 }

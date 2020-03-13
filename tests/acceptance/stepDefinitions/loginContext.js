@@ -76,7 +76,6 @@ When('the user logs out of the webUI', () => {
 })
 
 When('the user re-logs in as {string} using the webUI', (user) => {
-  console.log(client.globals)
   return loginHelper.reLoginAsUser(user)
 })
 
