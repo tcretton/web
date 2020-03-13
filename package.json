@@ -130,5 +130,8 @@
       "yarn lint --fix",
       "git add"
     ]
+  },
+  "dependencies": {
+    "redis": "^3.0.2"
   }
 }

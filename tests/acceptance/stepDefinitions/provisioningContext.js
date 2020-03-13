@@ -5,6 +5,7 @@ const fs = require('fs-extra')
 require('url-search-params-polyfill')
 const httpHelper = require('../helpers/httpHelper')
 const backendHelper = require('../helpers/backendHelper')
+const redisHelper = require('../helpers/redisHelper')
 const userSettings = require('../helpers/userSettings')
 const codify = require('../helpers/codify')
 const { join } = require('../helpers/path')
@@ -86,6 +87,12 @@ function createUser (userId, password, displayName = false, email = false) {
 }
 
 function deleteUser (userId) {
+  if (client.globals.ocis) {
+    return ldap.deleteUser(client.globals.ldapClient, userId).catch(() => {
+      console.log("User doesn't exists")
+    })
+      // .then(() => redisHelper.clearVersion(userId))
+  }
   const headers = httpHelper.createOCSRequestHeaders(client.globals.backend_admin_username)
   userSettings.deleteUserFromCreatedUsersList(userId)
   return fetch(
@@ -235,6 +242,7 @@ After(async function () {
   const createdRemoteUsers = Object.keys(userSettings.getCreatedUsers('REMOTE'))
   const createdGroups = userSettings.getCreatedGroups()
 
+  console.log(client.globals)
   if (client.globals.ocis) {
     const deleteUserPromises = createdUsers.map(
       user => ldap.deleteUser(client.globals.ldapClient, user)
@@ -249,6 +257,8 @@ After(async function () {
           console.log('Deleted LDAP Group: ', group)
         })
     )
+    const clearVersionsPromises = createdUsers.map(user => redisHelper.clearVersion(user))
+    await Promise.all(clearVersionsPromises)
     await Promise.all([...deleteUserPromises, ...deleteGroupPromises])
       .then(() => {
         userSettings.resetCreatedUsers()

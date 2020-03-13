@@ -35,10 +35,12 @@ module.exports = {
     if (process.env.DRONE) {
       env = 'drone'
     }
+    console.log(client.globals)
     await closeSession()
     await stopWebDriver()
     await startWebDriver({ env })
     await createSession({ env })
+    console.log(client.globals)
     return this.loginAsUser(userId)
   },
 

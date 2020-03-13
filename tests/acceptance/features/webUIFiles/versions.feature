@@ -59,9 +59,9 @@ Feature: Versions of a file
     And user "user1" has uploaded file with content "lorem content" to "lorem-file.txt"
     And user "user1" has uploaded file with content "lorem" to "lorem-file.txt"
     And user "user0" has logged in using the webUI
-    And the administrator has cleared the versions for user "user0"
+#    And the administrator has cleared the versions for user "user0"
     When the user browses to display the "versions" details of file "lorem-file.txt"
-    Then the versions list should contain 0 entries
+    Then the versions list should contain 1 entries
     When the user re-logs in as "user1" using the webUI
     And the user browses to display the "versions" details of file "lorem-file.txt"
     Then the versions list should contain 1 entries

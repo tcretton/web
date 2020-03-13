@@ -405,7 +405,7 @@ Then('the deleted elements should not be listed on the webUI after a page reload
 Then('the versions list should contain {int} entries', async function (expectedNumber) {
   const count = await client.page.FilesPageElement.versionsDialog().getVersionsCount()
   return assert.strictEqual(
-    expectedNumber, count
+    count, expectedNumber
   )
 })
 

@@ -3,8 +3,10 @@ const { After, Before, Given, Then, When } = require('cucumber')
 const webdavHelper = require('../helpers/webdavHelper')
 const httpHelper = require('../helpers/httpHelper')
 const backendHelper = require('../helpers/backendHelper')
+const userSettings = require('../helpers/userSettings')
+const redisHelper = require('../helpers/redisHelper')
 const fetch = require('node-fetch')
-const fs = require('fs')
+const fs = require('fs-extra')
 const path = require('path')
 const occHelper = require('../helpers/occHelper')
 const { join } = require('../helpers/path')
@@ -124,6 +126,11 @@ Given('the setting {string} of app {string} has been set to {string} on remote s
 })
 
 Given('the administrator has cleared the versions for user {string}', function (userId) {
+  if (client.globals.ocis) {
+    // return redisHelper.clearVersion(userId)
+    fs.removeSync(join(client.globals.ocis_data_dir, 'data', userId, 'files_versions'))
+    return
+  }
   return occHelper.runOcc(
     [
       'versions:cleanup', userId
@@ -131,6 +138,13 @@ Given('the administrator has cleared the versions for user {string}', function (
 })
 
 Given('the administrator has cleared the versions for all users', function () {
+  if (client.globals.ocis) {
+    // return redisHelper.clearAllVersion()
+    for (const user of userSettings.createdUsers) {
+      fs.removeSync(join(client.globals.ocis_data_dir, 'data', user, 'files_versions'))
+    }
+    return
+  }
   return occHelper.runOcc(
     [
       'versions:cleanup'

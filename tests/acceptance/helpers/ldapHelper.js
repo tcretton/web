@@ -155,12 +155,17 @@ exports.deleteGroup = function (client, group) {
   })
 }
 
-exports.deleteUser = function (client, user) {
+exports.deleteUser = function (ldapClient, user) {
   return new Promise((resolve, reject) => {
-    client.del(`uid=${user},${USERS_OU}`, function (err) {
+    ldapClient.del(`uid=${user},${USERS_OU}`, function (err) {
       if (err) {
         reject(err)
       }
+      console.log('Deleting Data dir for ' + user)
+      console.log(fs.existsSync(join(client.globals.ocis_data_dir, 'data', user)))
+      fs.removeSync(join(client.globals.ocis_data_dir, 'data', user))
+      console.log(fs.existsSync(join(client.globals.ocis_data_dir, 'data', user)))
+
       resolve()
     })
   })
